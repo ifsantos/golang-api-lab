@@ -30,10 +30,28 @@ func NewCreditCard(number string, name string, expirationMonth int, expirantionY
 }
 
 func (c *CreditCard) IsValid() error {
+	err := c.validateNumber()
+	if err != nil {
+		return err
+	}
+	err = c.validateMonth()
+	if err != nil {
+		return err
+	}
+	return nil
+}
+func (c *CreditCard) validateNumber() error {
 	re := regexp.MustCompile(`^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14})$`)
 
 	if !re.MatchString(c.number) {
 		return errors.New("invalid credit card number")
 	}
 	return nil
+}
+
+func (c *CreditCard) validateMonth() error {
+	if c.expirationMonth > 0 && c.expirationMonth < 13 {
+		return nil
+	}
+	return errors.New("invalid expiration month")
 }
